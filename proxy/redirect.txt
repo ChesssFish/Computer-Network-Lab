@@ -1,0 +1,1 @@
+https?://(\w+\.)?microsoft\.\w+/ www.hit.edu.cn
