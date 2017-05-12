@@ -1,10 +1,10 @@
-#encoding: utf-8
+#encoding: "utf-8"
 from socket import *
 from SocketServer import TCPServer, StreamRequestHandler, ThreadingMixIn
 from select import select
 import re
-import time
 import sys, os
+#继承自ThreadingMixIn与TCPserver即使用多线程服务器
 class proxyServer(ThreadingMixIn,TCPServer):pass
 
 class Handler(StreamRequestHandler):
@@ -39,20 +39,21 @@ class Handler(StreamRequestHandler):
             print u"接收服务器数据失败", e
             return
 
-        firstLine = data.split("\r\n")[0]
-        if firstLine.startswith("CONNECT"):return
+        firstLine = data.split("\r\n")[0] 
+        if firstLine.startswith("CONNECT"):return #不代理HTTPS请求
 
         #重定向url
         for pat in redirectMap:
             items = firstLine.split(" ")
             url = items[1]
             if re.match(pat, url):  
-                url = re.sub(pat, r"http://" + redirectMap[pat] + r"/", url)
+                url = re.sub(pat, r"http://" + redirectMap[pat] + r"/", url)           #修改url
                 hostPatten = re.compile(r"Host: (\S+):?(\d+)?\r\n")
-                data = re.sub(hostPatten,r"Host: " + redirectMap[pat] + r"\r\n", data)
-                data = items[0] + " " + url+ " " + items[2] + data[len(firstLine):]
+                data = re.sub(hostPatten,r"Host: " + redirectMap[pat] + r"\r\n", data) #修改Host
+                data = items[0] + " " + url+ " " + items[2] + data[len(firstLine):]    #重组请求
 
         print items[0] + " " + url+ " " + items[2]
+        
         #解析服务器地址
         port = 80
         try:
@@ -134,6 +135,7 @@ if not os.path.isfile(redirectMapPath): f = open("redirect.txt",'w');f.close()
 port = 10240
 i = 1
 
+#处理控制台命令
 try:
     argvLen = len(sys.argv)
     while(i < argvLen):
@@ -159,4 +161,4 @@ except Exception, e:
     exit()
 
 print u"初始化完成！开始监听 端口:", port
-server.serve_forever()
+server.serve_forever() #启动服务器
