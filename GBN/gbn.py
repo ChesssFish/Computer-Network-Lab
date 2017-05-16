@@ -1,4 +1,4 @@
-﻿#encode "utf-8"
+﻿# -*- coding: utf-8 -*-
 from select import select
 import random
 seqLen = 1 #in bytes
@@ -66,7 +66,7 @@ def gbnSend(data, s, addr, pSend = 1.0):
       cur = head
   
   print u"发送完成！"
-def gbnRecv(s, pACK = 1):
+def gbnRecv(s):
   head = 0
   # fileBuffer = open("fileRecv", "wb")
   buffer = bytearray(MAX_BUFFER_LEN)

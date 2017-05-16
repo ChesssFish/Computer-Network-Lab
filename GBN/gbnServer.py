@@ -1,4 +1,4 @@
-﻿#encode "utf-8"
+﻿# -*- coding: utf-8 -*-
 import socket
 import gbn
 import datetime
